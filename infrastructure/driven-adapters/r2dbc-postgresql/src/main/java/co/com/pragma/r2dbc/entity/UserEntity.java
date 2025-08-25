@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDate;
+
 @Table("users")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,4 +21,8 @@ public class UserEntity {
     private String firstLastName;
     private String secondLastName;
     private String email;
+    private String address;
+    private String phone;
+    private LocalDate birthDate;
+    private Double baseSalary;
 }

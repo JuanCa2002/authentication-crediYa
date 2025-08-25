@@ -3,6 +3,8 @@ package co.com.pragma.api.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class UserResponseDTO {
@@ -13,4 +15,9 @@ public class UserResponseDTO {
     private String firstLastName;
     private String secondLastName;
     private String email;
+    private String address;
+    private String phone;
+    private LocalDate birthDate;
+    private Double baseSalary;
+
 }

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,4 +20,8 @@ public class User {
     private String firstLastName;
     private String secondLastName;
     private String email;
+    private String address;
+    private String phone;
+    private LocalDate birthDate;
+    private Double baseSalary;
 }
