@@ -1,0 +1,42 @@
+package co.com.pragma.api;
+
+import co.com.pragma.api.config.UserPath;
+import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.RouterOperation;
+import org.springdoc.core.annotations.RouterOperations;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
+@Configuration
+@RequiredArgsConstructor
+public class RouterRest {
+
+    @Value("${routes.base-path}")
+    private String basePath;
+
+    private final UserPath userPath;
+    private final UserHandler userHandler;
+
+    @Bean
+    @RouterOperations({
+            @RouterOperation(
+                    path = "/usuarios",
+                    method = {RequestMethod.POST},
+                    beanClass = UserHandler.class,
+                    beanMethod = "listenSaveUser"
+            )
+    })
+    public RouterFunction<ServerResponse> routerFunction(UserHandler userHandler) {
+        return RouterFunctions
+                .route()
+                .path(basePath, builder -> builder
+                        .POST(userPath.getUsers(), this.userHandler::listenSaveUser)
+                )
+                .build();
+    }
+}
