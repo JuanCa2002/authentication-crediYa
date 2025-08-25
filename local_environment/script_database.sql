@@ -8,5 +8,5 @@ CREATE TABLE users (
 	address VARCHAR(255),
     phone VARCHAR(50),
     birth_date DATE,
-    base_salary NUMERIC(8,2) NOT NULL
+    base_salary NUMERIC(10,2) NOT NULL
 );

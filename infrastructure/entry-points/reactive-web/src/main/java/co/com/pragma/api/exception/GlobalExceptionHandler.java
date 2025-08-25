@@ -1,6 +1,7 @@
 package co.com.pragma.api.exception;
 
 import co.com.pragma.api.dto.errors.ErrorResponse;
+import co.com.pragma.usecase.user.exceptions.BusinessException;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
@@ -37,6 +38,14 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
                          .mainMessage("Validation failed")
                          .messages(((FieldValidationException) error).getMessages())
                          .build();
+            return ServerResponse.badRequest()
+                    .bodyValue(response);
+        } else if( error instanceof BusinessException){
+            ErrorResponse response = ErrorResponse.builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .mainMessage("Business Rule Violation")
+                    .messages(List.of(error.getMessage()))
+                    .build();
             return ServerResponse.badRequest()
                     .bodyValue(response);
         } else {

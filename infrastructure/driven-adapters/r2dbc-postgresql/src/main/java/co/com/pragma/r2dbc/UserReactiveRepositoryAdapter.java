@@ -31,5 +31,13 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                 .as(txOperator::transactional);
     }
 
+    @Override
+    public Mono<User> findByEmail(String email) {
+        return repository.findByEmail(email)
+                .map(entity -> mapper.map(entity, User.class))
+                .as(txOperator::transactional);
+    }
+
+
 
 }
