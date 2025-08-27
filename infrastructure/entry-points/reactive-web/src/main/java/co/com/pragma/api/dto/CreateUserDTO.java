@@ -36,6 +36,12 @@ public class CreateUserDTO {
 
     @NotNull
     @NotBlank
+    @Length(max = 50, min = 1)
+    @Schema(description = "Identification Number of the user")
+    private String identificationNumber;
+
+    @NotNull
+    @NotBlank
     @Email
     @Length(max = 255, min = 1)
     @Schema(description = "Email of the user")

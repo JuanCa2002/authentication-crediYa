@@ -20,6 +20,7 @@ public class UserEntity {
     private String secondName;
     private String firstLastName;
     private String secondLastName;
+    private String identificationNumber;
     private String email;
     private String address;
     private String phone;

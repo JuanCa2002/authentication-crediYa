@@ -38,6 +38,12 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                 .as(txOperator::transactional);
     }
 
+    @Override
+    public Mono<User> findByIdentificationNumber(String identificationNumber) {
+        return repository.findByIdentificationNumber(identificationNumber)
+                .map(entity -> mapper.map(entity, User.class))
+                .as(txOperator::transactional);
+    }
 
 
 }

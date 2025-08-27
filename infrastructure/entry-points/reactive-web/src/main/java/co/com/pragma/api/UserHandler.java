@@ -7,6 +7,8 @@ import co.com.pragma.api.exception.FieldValidationException;
 import co.com.pragma.api.mapper.UserMapper;
 import co.com.pragma.usecase.user.UserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -31,6 +33,14 @@ import java.util.List;
         @ApiResponse(
                 responseCode = "400",
                 description = "Validation data error",
+                content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = ErrorResponse.class)
+                )
+        ),
+        @ApiResponse(
+                responseCode = "404",
+                description = "Not Found Error",
                 content = @Content(
                         mediaType = "application/json",
                         schema = @Schema(implementation = ErrorResponse.class)
@@ -93,6 +103,41 @@ public class UserHandler {
                 .flatMap(savedUserResponse -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedUserResponse));
+    }
+
+
+    @Operation(
+            operationId = "getUserByIdentificationNumber",
+            summary = "Get user by identification number",
+            description = "Finds a user by their identification number",
+            parameters = {
+                    @Parameter(
+                            name = "identificationNumber",
+                            in = ParameterIn.PATH,
+                            required = true,
+                            description = "The identification number of the user"
+                    )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User found",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = UserResponseDTO.class)
+                            )
+                    )
+            }
+    )
+    public Mono<ServerResponse> listenGetUserByIdentificationNumber(ServerRequest serverRequest) {
+        String identificationNumber = serverRequest.pathVariable("identificationNumber");
+
+        return userUseCase.findUserByIdentificationNumber(identificationNumber)
+                .map(mapper::toResponse)
+                .flatMap(userResponse -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(userResponse))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
 }

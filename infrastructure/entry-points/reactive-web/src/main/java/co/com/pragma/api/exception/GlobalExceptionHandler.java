@@ -2,6 +2,7 @@ package co.com.pragma.api.exception;
 
 import co.com.pragma.api.dto.errors.ErrorResponse;
 import co.com.pragma.usecase.user.exceptions.BusinessException;
+import co.com.pragma.usecase.user.exceptions.NotFoundException;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
@@ -48,7 +49,16 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
                     .build();
             return ServerResponse.badRequest()
                     .bodyValue(response);
-        } else {
+        } else if (error instanceof NotFoundException) {
+            ErrorResponse response = ErrorResponse.builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .mainMessage("Resource Not Found")
+                    .messages(List.of(error.getMessage()))
+                    .build();
+            return ServerResponse.status(HttpStatus.NOT_FOUND) // 404
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(response);
+        }else {
             ErrorResponse response = ErrorResponse.builder()
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .mainMessage("Internal Server Error")

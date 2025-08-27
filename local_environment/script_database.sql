@@ -4,6 +4,7 @@ CREATE TABLE users (
     second_name VARCHAR(100) NOT NULL,
     first_last_name VARCHAR(100) NOT NULL,
     second_last_name VARCHAR(100) NOT NULL,
+    identification_number VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
 	address VARCHAR(255),
     phone VARCHAR(50),

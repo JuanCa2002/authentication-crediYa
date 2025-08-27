@@ -29,6 +29,12 @@ public class RouterRest {
                     method = {RequestMethod.POST},
                     beanClass = UserHandler.class,
                     beanMethod = "listenSaveUser"
+            ),
+            @RouterOperation(
+                    path = "/usuarios/{identificationNumber}",
+                    method = {RequestMethod.GET},
+                    beanClass = UserHandler.class,
+                    beanMethod = "listenGetUserByIdentificationNumber"
             )
     })
     public RouterFunction<ServerResponse> routerFunction(UserHandler userHandler) {
@@ -36,6 +42,7 @@ public class RouterRest {
                 .route()
                 .path(basePath, builder -> builder
                         .POST(userPath.getUsers(), this.userHandler::listenSaveUser)
+                        .GET(userPath.getUsers()+"/{identificationNumber}", this.userHandler::listenGetUserByIdentificationNumber )
                 )
                 .build();
     }
