@@ -87,7 +87,7 @@ public class UserHandler {
     )
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CreateUserDTO.class)
-                .doOnNext(dto -> log.info("Receiving request to create a new user: {}", dto))
+                .doOnNext(dto -> log.info("[UserHandler] Receiving request to create a new user: {}", dto))
                 .flatMap(dto -> {
                     Errors errors = new BeanPropertyBindingResult(dto, CreateUserDTO.class.getName());
                     validator.validate(dto, errors);
@@ -96,19 +96,19 @@ public class UserHandler {
                         List<String> messageErrors = errors.getFieldErrors().stream()
                                 .map(fieldError ->  fieldError.getField() + " " + fieldError.getDefaultMessage())
                                 .toList();
-                        log.warn("Validation Errors While Creating User: {}", messageErrors);
+                        log.warn("[UserHandler] Validation Errors While Creating User: {}", messageErrors);
                         return Mono.error(new FieldValidationException(messageErrors));
                     }
                     return Mono.just(dto);
                 })
                 .map(mapper::toDomain)
                 .flatMap(userUseCase::saveUser)
-                .doOnNext(user -> log.info("User saved successfully: {}", user.getIdentificationNumber()))
+                .doOnNext(user -> log.info("[UserHandler] User saved successfully: {}", user.getIdentificationNumber()))
                 .map(mapper::toResponse)
                 .flatMap(savedUserResponse -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedUserResponse))
-                .doOnError(e -> log.error("Error processing user creation request ", e));
+                .doOnError(e -> log.error("[UserHandler] Error processing user creation request ", e));
     }
 
 
@@ -137,19 +137,19 @@ public class UserHandler {
     )
     public Mono<ServerResponse> listenGetUserByIdentificationNumber(ServerRequest serverRequest) {
         String identificationNumber = serverRequest.pathVariable("identificationNumber");
-        log.info("Searching user with identification number: {}", identificationNumber);
+        log.info("[UserHandler] Searching user with identification number: {}", identificationNumber);
 
         return userUseCase.findUserByIdentificationNumber(identificationNumber)
                 .map(mapper::toResponse)
-                .doOnNext(user -> log.info("User with identification number {} found successfully", identificationNumber))
+                .doOnNext(user -> log.info("[UserHandler] User with identification number {} found successfully", identificationNumber))
                 .flatMap(userResponse -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(userResponse))
                 .switchIfEmpty(Mono.defer(() -> {
-                    log.warn("User with identification number {} not found", identificationNumber);
+                    log.warn("[UserHandler] User with identification number {} not found", identificationNumber);
                     return ServerResponse.notFound().build();
                     }))
-                .doOnError(e -> log.error("Error while searching for the user with identification number {}", identificationNumber, e));
+                .doOnError(e -> log.error("[UserHandler] Error while searching for the user with identification number {}", identificationNumber, e));
     }
 
 }
