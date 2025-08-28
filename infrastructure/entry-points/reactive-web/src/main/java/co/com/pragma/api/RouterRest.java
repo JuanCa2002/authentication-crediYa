@@ -1,10 +1,10 @@
 package co.com.pragma.api;
 
+import co.com.pragma.api.config.BasePath;
 import co.com.pragma.api.config.UserPath;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,9 +16,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @RequiredArgsConstructor
 public class RouterRest {
 
-    @Value("${routes.base-path}")
-    private String basePath;
-
+    private final BasePath basePath;
     private final UserPath userPath;
     private final UserHandler userHandler;
 
@@ -40,7 +38,7 @@ public class RouterRest {
     public RouterFunction<ServerResponse> routerFunction(UserHandler userHandler) {
         return RouterFunctions
                 .route()
-                .path(basePath, builder -> builder
+                .path(basePath.getBasePath(), builder -> builder
                         .POST(userPath.getUsers(), this.userHandler::listenSaveUser)
                         .GET(userPath.getUsers()+"/{identificationNumber}", this.userHandler::listenGetUserByIdentificationNumber )
                 )
