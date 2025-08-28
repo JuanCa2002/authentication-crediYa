@@ -2,7 +2,8 @@ package co.com.pragma.usecase.user;
 
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
-import co.com.pragma.usecase.user.exceptions.BusinessException;
+import co.com.pragma.usecase.exception.BusinessException;
+import co.com.pragma.usecase.user.constants.UserMessageConstants;
 import co.com.pragma.usecase.user.exceptions.UserByIdentificationNumberNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.text.MessageFormat;
 import java.time.LocalDate;
 
 import static org.mockito.Mockito.when;
@@ -74,7 +76,9 @@ public class UserUseCaseTest {
         StepVerifier.create(result)
                 .expectErrorMatches(throwable ->
                         throwable instanceof BusinessException &&
-                                throwable.getMessage().equals("Ya existe un usuario con el email juan@email.com")
+                                throwable.getMessage().equals(
+                                        MessageFormat.format(UserMessageConstants.USER_BY_EMAIL_ALREADY_EXISTS, user.getEmail())
+                                )
                 )
                 .verify();
     }
@@ -95,7 +99,9 @@ public class UserUseCaseTest {
         StepVerifier.create(result)
                 .expectErrorMatches(throwable ->
                         throwable instanceof BusinessException &&
-                                throwable.getMessage().equals("Ya existe un usuario con el numero de identificación 123")
+                                throwable.getMessage().equals(
+                                        MessageFormat.format(UserMessageConstants.USER_BY_IDN_ALREADY_EXISTS, user.getIdentificationNumber())
+                                )
                 )
                 .verify();
     }
@@ -122,7 +128,9 @@ public class UserUseCaseTest {
         StepVerifier.create(result)
                 .expectErrorMatches(throwable ->
                         throwable instanceof UserByIdentificationNumberNotFoundException &&
-                                throwable.getMessage().equals("No se encontro un usuario con el numero de identificación 123")
+                                throwable.getMessage().equals(
+                                        MessageFormat.format(UserMessageConstants.USER_BY_IDN_NOT_FOUND, "123")
+                                )
                 )
                 .verify();
     }

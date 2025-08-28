@@ -1,8 +1,8 @@
 package co.com.pragma.api.exception;
 
 import co.com.pragma.api.dto.errors.ErrorResponse;
-import co.com.pragma.usecase.user.exceptions.BusinessException;
-import co.com.pragma.usecase.user.exceptions.NotFoundException;
+import co.com.pragma.usecase.exception.BusinessException;
+import co.com.pragma.usecase.exception.NotFoundException;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;

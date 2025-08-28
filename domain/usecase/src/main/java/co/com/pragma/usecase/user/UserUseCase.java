@@ -2,7 +2,8 @@ package co.com.pragma.usecase.user;
 
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
-import co.com.pragma.usecase.user.exceptions.BusinessException;
+import co.com.pragma.usecase.user.exceptions.UserByEmailAlreadyExistsBusinessException;
+import co.com.pragma.usecase.user.exceptions.UserByIdentificationNumberAlreadyExistsBusinessException;
 import co.com.pragma.usecase.user.exceptions.UserByIdentificationNumberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -14,10 +15,10 @@ public class UserUseCase {
 
     public Mono<User> saveUser(User user) {
         return userRepository.findByEmail(user.getEmail())
-                .flatMap(existing -> Mono.<User>error(new BusinessException("Ya existe un usuario con el email " + user.getEmail())))
+                .flatMap(existing -> Mono.<User>error(new UserByEmailAlreadyExistsBusinessException(user.getEmail())))
                 .switchIfEmpty(
                         userRepository.findByIdentificationNumber(user.getIdentificationNumber())
-                                        .flatMap(existing -> Mono.<User>error(new BusinessException("Ya existe un usuario con el numero de identificación " + user.getIdentificationNumber())))
+                                        .flatMap(existing -> Mono.<User>error(new UserByIdentificationNumberAlreadyExistsBusinessException(user.getIdentificationNumber())))
                                         .switchIfEmpty(userRepository.save(user))
                 );
     }
