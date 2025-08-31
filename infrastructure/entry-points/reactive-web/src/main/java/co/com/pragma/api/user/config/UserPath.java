@@ -1,4 +1,4 @@
-package co.com.pragma.api.config;
+package co.com.pragma.api.user.config;
 
 import lombok.Getter;
 import lombok.Setter;

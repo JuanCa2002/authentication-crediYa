@@ -1,9 +1,10 @@
 package co.com.pragma.api.config;
 
-import co.com.pragma.api.UserHandler;
-import co.com.pragma.api.RouterRest;
-import co.com.pragma.api.dto.UserResponseDTO;
-import co.com.pragma.api.mapper.UserMapper;
+import co.com.pragma.api.user.UserHandler;
+import co.com.pragma.api.user.UserRouterRest;
+import co.com.pragma.api.user.config.UserPath;
+import co.com.pragma.api.user.dto.UserResponseDTO;
+import co.com.pragma.api.user.mapper.UserMapper;
 import co.com.pragma.model.user.User;
 import co.com.pragma.usecase.user.UserUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ import java.time.LocalDate;
 
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(classes = {RouterRest.class, UserHandler.class, UserPath.class, BasePath.class})
+@ContextConfiguration(classes = {UserRouterRest.class, UserHandler.class, UserPath.class, BasePath.class})
 @TestPropertySource(properties = "routes.base-path=/api/v1")
 @TestPropertySource(properties = "routes.paths.users=/usuarios")
 @WebFluxTest

@@ -1,4 +1,4 @@
-package co.com.pragma.r2dbc;
+package co.com.pragma.r2dbc.user;
 
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
@@ -41,6 +41,13 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     @Override
     public Mono<User> findByIdentificationNumber(String identificationNumber) {
         return repository.findByIdentificationNumber(identificationNumber)
+                .map(entity -> mapper.map(entity, User.class))
+                .as(txOperator::transactional);
+    }
+
+    @Override
+    public Mono<User> findByUserName(String userName) {
+        return repository.findByUserNameIgnoreCase(userName)
                 .map(entity -> mapper.map(entity, User.class))
                 .as(txOperator::transactional);
     }

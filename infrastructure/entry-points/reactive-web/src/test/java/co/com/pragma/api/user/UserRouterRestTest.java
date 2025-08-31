@@ -1,10 +1,10 @@
-package co.com.pragma.api;
+package co.com.pragma.api.user;
 
 import co.com.pragma.api.config.BasePath;
-import co.com.pragma.api.config.UserPath;
-import co.com.pragma.api.dto.CreateUserDTO;
-import co.com.pragma.api.dto.UserResponseDTO;
-import co.com.pragma.api.mapper.UserMapper;
+import co.com.pragma.api.user.config.UserPath;
+import co.com.pragma.api.user.dto.CreateUserDTO;
+import co.com.pragma.api.user.dto.UserResponseDTO;
+import co.com.pragma.api.user.mapper.UserMapper;
 import co.com.pragma.model.user.User;
 import co.com.pragma.usecase.user.UserUseCase;
 import org.assertj.core.api.Assertions;
@@ -26,12 +26,12 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(classes = {RouterRest.class, UserHandler.class})
+@ContextConfiguration(classes = {UserRouterRest.class, UserHandler.class})
 @EnableConfigurationProperties({UserPath.class, BasePath.class})
 @TestPropertySource(properties = "routes.base-path=/api/v1")
 @TestPropertySource(properties = "routes.paths.users=/usuarios")
 @WebFluxTest
-class RouterRestTest {
+class UserRouterRestTest {
 
     @Autowired
     private WebTestClient webTestClient;
