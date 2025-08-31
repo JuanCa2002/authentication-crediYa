@@ -1,4 +1,5 @@
 package co.com.pragma.model.user;
+import co.com.pragma.model.role.Role;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 public class User {
 
     private String id;
+    private String userName;
+    private String password;
     private String identificationNumber;
     private String firstName;
     private String secondName;
@@ -25,4 +28,6 @@ public class User {
     private String phone;
     private LocalDate birthDate;
     private Double baseSalary;
+    private Role role;
+    private Integer roleId;
 }

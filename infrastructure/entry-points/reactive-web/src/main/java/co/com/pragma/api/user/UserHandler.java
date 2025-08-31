@@ -1,10 +1,10 @@
-package co.com.pragma.api;
+package co.com.pragma.api.user;
 
-import co.com.pragma.api.dto.CreateUserDTO;
-import co.com.pragma.api.dto.UserResponseDTO;
+import co.com.pragma.api.user.dto.CreateUserDTO;
+import co.com.pragma.api.user.dto.UserResponseDTO;
 import co.com.pragma.api.dto.errors.ErrorResponse;
 import co.com.pragma.api.exception.FieldValidationException;
-import co.com.pragma.api.mapper.UserMapper;
+import co.com.pragma.api.user.mapper.UserMapper;
 import co.com.pragma.usecase.user.UserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

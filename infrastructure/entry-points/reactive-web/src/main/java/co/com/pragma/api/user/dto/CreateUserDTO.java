@@ -1,4 +1,4 @@
-package co.com.pragma.api.dto;
+package co.com.pragma.api.user.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
@@ -11,6 +11,18 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @Builder
 public class CreateUserDTO {
+
+    @NotNull
+    @NotBlank
+    @Length(min = 1, max = 100)
+    @Schema(description = "User name of the user")
+    private String userName;
+
+    @NotNull
+    @NotBlank
+    @Length(min = 1, max = 8)
+    @Schema(description = "Password of the user")
+    private String password;
 
     @NotNull
     @NotBlank
@@ -68,5 +80,10 @@ public class CreateUserDTO {
     @Digits(integer = 8, fraction = 2, message = "debe tener hasta 8 dígitos enteros y 2 decimales")
     @Schema(description = "Base salary of the user")
     private Double baseSalary;
+
+    @NotNull
+    @Min(value = 1)
+    @Schema(description = "Role unique identifier")
+    private Integer roleId;
 
 }

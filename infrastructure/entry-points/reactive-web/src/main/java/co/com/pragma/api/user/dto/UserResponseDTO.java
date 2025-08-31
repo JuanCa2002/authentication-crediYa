@@ -1,4 +1,4 @@
-package co.com.pragma.api.dto;
+package co.com.pragma.api.user.dto;
 
 import lombok.*;
 
@@ -22,5 +22,6 @@ public class UserResponseDTO {
     private String phone;
     private LocalDate birthDate;
     private Double baseSalary;
+    private Integer roleId;
 
 }
