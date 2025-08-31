@@ -16,6 +16,8 @@ public class UserEntity {
 
     @Id
     private Long id;
+    private String userName;
+    private String password;
     private String firstName;
     private String secondName;
     private String firstLastName;
@@ -26,4 +28,5 @@ public class UserEntity {
     private String phone;
     private LocalDate birthDate;
     private Double baseSalary;
+    private Integer roleId;
 }

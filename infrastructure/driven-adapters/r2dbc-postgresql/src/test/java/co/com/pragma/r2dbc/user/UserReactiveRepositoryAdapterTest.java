@@ -1,4 +1,4 @@
-package co.com.pragma.r2dbc;
+package co.com.pragma.r2dbc.user;
 
 import co.com.pragma.model.user.User;
 import co.com.pragma.r2dbc.entity.UserEntity;

@@ -33,6 +33,7 @@ routes:
   base-path: /api/v1
   paths:
     users: "/usuarios"
+    roles: "/roles"
 
 adapters:
   r2dbc:
