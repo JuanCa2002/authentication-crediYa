@@ -3,9 +3,8 @@ server:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    use-root-path: true
   api-docs:
-    path: /swagger.v1+json
+    path: /v3/api-docs
 spring:
   application:
     name: "Authentication-CrediYa"
@@ -34,6 +33,7 @@ routes:
   paths:
     users: "/usuarios"
     roles: "/roles"
+    auth: "/autenticacion"
 
 adapters:
   r2dbc:
