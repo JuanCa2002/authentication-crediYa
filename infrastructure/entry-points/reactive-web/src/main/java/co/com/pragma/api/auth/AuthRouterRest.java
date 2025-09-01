@@ -27,6 +27,12 @@ public class AuthRouterRest {
                     method = {RequestMethod.POST},
                     beanClass = AuthHandler.class,
                     beanMethod = "listenAuthLogin"
+            ),
+            @RouterOperation(
+                    path = "/autenticacion/validate",
+                    method = {RequestMethod.POST},
+                    beanClass = AuthHandler.class,
+                    beanMethod = "listenAuthValidate"
             )
     })
     public RouterFunction<ServerResponse> authRouterFunction(AuthHandler authHandler) {
@@ -34,6 +40,7 @@ public class AuthRouterRest {
                 .route()
                 .path(basePath.getBasePath(), builder -> builder
                         .POST(authPath.getAuth()+"/login", this.authHandler::listenAuthLogin)
+                        .POST(authPath.getAuth()+"/validate", this.authHandler::listenAuthValidate)
                 )
                 .build();
     }
