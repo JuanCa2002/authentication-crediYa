@@ -2,12 +2,17 @@ package co.com.pragma.api.auth;
 
 import co.com.pragma.api.auth.dto.LoginDTO;
 import co.com.pragma.api.auth.dto.LoginResponseDTO;
+import co.com.pragma.api.auth.dto.ValidateResponseDTO;
 import co.com.pragma.api.auth.exceptions.InvalidLoginException;
 import co.com.pragma.api.dto.errors.ErrorResponse;
 import co.com.pragma.api.exception.FieldValidationException;
 import co.com.pragma.api.helper.JWTUtil;
+import co.com.pragma.api.user.dto.UserResponseDTO;
 import co.com.pragma.usecase.user.UserUseCase;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -26,7 +31,11 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Authentication", description = "Authentication management APIs")
 @ApiResponses(value = {
@@ -132,5 +141,53 @@ public class AuthHandler {
                 )
                 .doOnError(e -> log.error("[AuthHandler] Error processing login creation request ", e));
 
+    }
+
+    @Operation(
+            operationId = "validate",
+            summary = "Validate token",
+            description = "Validates a given token",
+            parameters = {
+                    @Parameter(
+                            name = "token",
+                            in = ParameterIn.QUERY,
+                            required = true,
+                            description = "The bearer token to validate"
+                    )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Token validated",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ValidateResponseDTO.class)
+                            )
+                    )
+            }
+    )
+    public Mono<ServerResponse> listenAuthValidate(ServerRequest serverRequest) {
+        Optional<String> token = serverRequest.queryParam("token");
+        log.info("[AuthHandler] Validating given token: {}", token);
+
+        return Mono.defer(() -> {
+            Claims claims = jwtUtil.validateAndGetClaims(token.orElse(""));
+
+            LocalDateTime expirationDateTime = LocalDateTime.ofInstant(claims.getExpiration().toInstant(), ZoneId.systemDefault());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedExpiration = expirationDateTime.format(formatter);
+
+            ValidateResponseDTO response = ValidateResponseDTO.builder()
+                    .role(claims.get("role").toString())
+                    .userName(claims.getSubject())
+                    .expirationDate(formattedExpiration)
+                    .build();
+
+            log.info("[AuthHandler] Validation successfully, returning response...");
+
+            return ServerResponse.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(response);
+        }).doOnError(e -> log.error("[AuthHandler] Error validating token ", e));
     }
 }

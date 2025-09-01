@@ -2,6 +2,7 @@ package co.com.pragma.api.helper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
@@ -66,4 +67,20 @@ public class JWTUtil {
         final String extractedUsername = extractUsername(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));
     }
+
+
+    public Claims validateAndGetClaims(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+
+            if (claims.getExpiration().before(new Date())) {
+                throw new SignatureException("Token expirado");
+            }
+
+            return claims;
+        } catch (Exception e) {
+            throw new SignatureException("Token invalido");
+        }
+    }
+
 }
