@@ -50,4 +50,16 @@ public class UserUseCase {
                 .switchIfEmpty(Mono.error(new UserByIdentificationNumberNotFoundException(identificationNumber)));
 
     }
+
+    public Mono<User> findByUserName(String userName){
+        return userRepository.findByUserName(userName)
+                .flatMap(user ->
+                     roleRepository.finById(user.getRoleId())
+                             .map(role -> {
+                                 user.setRole(role);
+                                 return user;
+                             })
+                             .switchIfEmpty(Mono.error(new UserRoleByIdNotFoundException(user.getRoleId())))
+                );
+    }
 }

@@ -10,6 +10,5 @@ public interface UserReactiveRepository extends ReactiveCrudRepository<UserEntit
     Mono<UserEntity> findByEmail(String email);
     Mono<UserEntity> findByIdentificationNumber(String identificationNumber);
     Mono<UserEntity> findByUserNameIgnoreCase(String userName);
-    Mono<UserEntity> findByUserName(String userName);
 
 }
