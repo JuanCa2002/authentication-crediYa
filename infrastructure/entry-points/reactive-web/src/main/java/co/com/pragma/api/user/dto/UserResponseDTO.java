@@ -13,6 +13,7 @@ public class UserResponseDTO {
 
     private String id;
     private String firstName;
+    private String userName;
     private String secondName;
     private String firstLastName;
     private String identificationNumber;
