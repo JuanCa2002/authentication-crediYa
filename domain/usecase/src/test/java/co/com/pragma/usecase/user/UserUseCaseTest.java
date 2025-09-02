@@ -1,10 +1,14 @@
 package co.com.pragma.usecase.user;
 
+import co.com.pragma.model.role.Role;
+import co.com.pragma.model.role.gateways.RoleRepository;
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.usecase.exception.BusinessException;
 import co.com.pragma.usecase.user.constants.UserMessageConstants;
 import co.com.pragma.usecase.user.exceptions.UserByIdentificationNumberNotFoundException;
+import co.com.pragma.usecase.user.exceptions.UserByUserNameAlreadyExistsBusinessException;
+import co.com.pragma.usecase.user.exceptions.UserRoleByIdNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,10 +30,14 @@ public class UserUseCaseTest {
     UserUseCase userUseCase;
 
     @Mock
+    RoleRepository roleRepository;
+
+    @Mock
     UserRepository repository;
 
     private final User user = User.builder()
             .id("1")
+            .userName("juan")
             .identificationNumber("123")
             .firstName("Juan")
             .secondName("Camilo")
@@ -38,8 +46,15 @@ public class UserUseCaseTest {
             .email("juan@email.com")
             .address("Mi casa")
             .phone("434343")
+            .roleId(1)
             .birthDate(LocalDate.of(2003,5, 22))
             .baseSalary(1444.00)
+            .build();
+
+    private final Role role = Role.builder()
+            .id(1)
+            .name("ADMINISTRADOR")
+            .description("Rol de administrador")
             .build();
 
     @Test
@@ -49,6 +64,12 @@ public class UserUseCaseTest {
 
         when(repository.findByIdentificationNumber(Mockito.anyString()))
                 .thenReturn(Mono.empty());
+
+        when(repository.findByUserName(Mockito.anyString()))
+                .thenReturn(Mono.empty());
+
+        when(roleRepository.finById(Mockito.anyInt()))
+                .thenReturn(Mono.just(role));
 
         when(repository.save(Mockito.any(User.class)))
                 .thenReturn(Mono.just(user));
@@ -62,11 +83,17 @@ public class UserUseCaseTest {
 
     @Test
     void shouldSaveUser_FindByEmailBusinessException() {
+        when(repository.findByUserName(Mockito.anyString()))
+                .thenReturn(Mono.empty());
+
         when(repository.findByEmail(Mockito.anyString()))
                 .thenReturn(Mono.just(user));
 
         when(repository.findByIdentificationNumber(Mockito.anyString()))
                 .thenReturn(Mono.empty());
+
+        when(roleRepository.finById(Mockito.anyInt()))
+                .thenReturn(Mono.just(role));
 
         when(repository.save(Mockito.any(User.class)))
                 .thenReturn(Mono.just(user));
@@ -84,12 +111,77 @@ public class UserUseCaseTest {
     }
 
     @Test
+    void shouldSaveUser_UserByUserNameAlreadyExistsBusinessException() {
+        when(repository.findByUserName(Mockito.anyString()))
+                .thenReturn(Mono.just(user));
+
+        when(repository.findByEmail(Mockito.anyString()))
+                .thenReturn(Mono.empty());
+
+        when(repository.findByIdentificationNumber(Mockito.anyString()))
+                .thenReturn(Mono.empty());
+
+        when(roleRepository.finById(Mockito.anyInt()))
+                .thenReturn(Mono.just(role));
+
+        when(repository.save(Mockito.any(User.class)))
+                .thenReturn(Mono.just(user));
+
+        Mono<User> result = userUseCase.saveUser(user);
+
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable ->
+                        throwable instanceof UserByUserNameAlreadyExistsBusinessException &&
+                                throwable.getMessage().equals(
+                                        UserMessageConstants.USER_BY_USER_NAME_ALREADY_EXISTS
+                                )
+                )
+                .verify();
+    }
+
+    @Test
+    void shouldSaveUser_UserRoleByIdNotFoundException() {
+        when(repository.findByUserName(Mockito.anyString()))
+                .thenReturn(Mono.empty());
+
+        when(repository.findByEmail(Mockito.anyString()))
+                .thenReturn(Mono.empty());
+
+        when(repository.findByIdentificationNumber(Mockito.anyString()))
+                .thenReturn(Mono.empty());
+
+        when(roleRepository.finById(Mockito.anyInt()))
+                .thenReturn(Mono.empty());
+
+        when(repository.save(Mockito.any(User.class)))
+                .thenReturn(Mono.just(user));
+
+        Mono<User> result = userUseCase.saveUser(user);
+
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable ->
+                        throwable instanceof UserRoleByIdNotFoundException &&
+                                throwable.getMessage().equals(
+                                       MessageFormat.format(UserMessageConstants.ROLE_BY_ID_NOT_FOUND, role.getId())
+                                )
+                )
+                .verify();
+    }
+
+
+    @Test
     void shouldSaveUser_FindByIdentificationNumberBusinessException() {
+        when(repository.findByUserName(Mockito.anyString()))
+                .thenReturn(Mono.empty());
+
         when(repository.findByEmail(Mockito.anyString()))
                 .thenReturn(Mono.empty());
 
         when(repository.findByIdentificationNumber(Mockito.anyString()))
                 .thenReturn(Mono.just(user));
+
+        when(roleRepository.finById(Mockito.anyInt()))
+                .thenReturn(Mono.just(role));
 
         when(repository.save(Mockito.any(User.class)))
                 .thenReturn(Mono.just(user));
@@ -101,6 +193,41 @@ public class UserUseCaseTest {
                         throwable instanceof BusinessException &&
                                 throwable.getMessage().equals(
                                         MessageFormat.format(UserMessageConstants.USER_BY_IDN_ALREADY_EXISTS, user.getIdentificationNumber())
+                                )
+                )
+                .verify();
+    }
+
+    @Test
+    void shouldFindByUserName() {
+        when(repository.findByUserName(Mockito.anyString()))
+                .thenReturn(Mono.just(user));
+
+        when(roleRepository.finById(Mockito.anyInt()))
+                .thenReturn(Mono.just(role));
+
+        Mono<User> result = userUseCase.findByUserName(user.getUserName());
+
+        StepVerifier.create(result)
+                .expectNextMatches(user -> user.getId().equals("1") && user.getUserName().equals("juan"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldFindByUserName_UserRoleByIdNotFoundException() {
+        when(repository.findByUserName(Mockito.anyString()))
+                .thenReturn(Mono.just(user));
+
+        when(roleRepository.finById(Mockito.anyInt()))
+                .thenReturn(Mono.empty());
+
+        Mono<User> result = userUseCase.findByUserName(user.getUserName());
+
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable ->
+                        throwable instanceof UserRoleByIdNotFoundException &&
+                                throwable.getMessage().equals(
+                                        MessageFormat.format(UserMessageConstants.ROLE_BY_ID_NOT_FOUND, role.getId())
                                 )
                 )
                 .verify();

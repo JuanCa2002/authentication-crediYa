@@ -12,7 +12,7 @@ public class RoleUseCase {
     private final RoleRepository roleRepository;
 
     public Mono<Role> saveRole(Role role){
-        return roleRepository.findByName(role.getName().toUpperCase())
+        return roleRepository.findByName(role.getName().trim().toUpperCase())
                 .flatMap(exists ->  Mono.<Role>error(new RoleAlreadyExistsByNameBusinessException(role.getName())))
                 .switchIfEmpty(roleRepository.save(role));
     }
