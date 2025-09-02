@@ -1,5 +1,6 @@
 package co.com.pragma.api.config;
 
+import co.com.pragma.api.SecurityTestConfig;
 import co.com.pragma.api.user.UserHandler;
 import co.com.pragma.api.user.UserRouterRest;
 import co.com.pragma.api.user.config.UserPath;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.when;
 @TestPropertySource(properties = "routes.base-path=/api/v1")
 @TestPropertySource(properties = "routes.paths.users=/usuarios")
 @WebFluxTest
-@Import({CorsConfig.class, SecurityHeadersConfig.class})
+@Import({CorsConfig.class, SecurityHeadersConfig.class, SecurityTestConfig.class})
 class ConfigTest {
 
     @Autowired
