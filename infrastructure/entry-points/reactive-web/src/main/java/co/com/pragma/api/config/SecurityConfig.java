@@ -4,6 +4,7 @@ import co.com.pragma.api.auth.JWTAuthenticationManager;
 import co.com.pragma.api.exception.GlobalExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -41,7 +42,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/webjars/**",
                                 "/configuration/**").permitAll()
-                        .pathMatchers("/api/v1/usuarios/**").hasAnyAuthority("ADMINISTRADOR", "ASESOR")
+                        .pathMatchers(HttpMethod.POST,"/api/v1/usuarios/**").hasAnyAuthority("ADMINISTRADOR", "ASESOR")
+                        .pathMatchers(HttpMethod.GET,"/api/v1/usuarios/**").hasAnyAuthority("ADMINISTRADOR", "ASESOR", "CLIENTE")
                         .pathMatchers("/api/v1/roles/**").hasAnyAuthority("ADMINISTRADOR")
                         .anyExchange().authenticated()
                 )
