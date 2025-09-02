@@ -1,5 +1,6 @@
 package co.com.pragma.api.user;
 
+import co.com.pragma.api.SecurityTestConfig;
 import co.com.pragma.api.config.BasePath;
 import co.com.pragma.api.user.config.UserPath;
 import co.com.pragma.api.user.dto.CreateUserDTO;
@@ -11,6 +12,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import static org.mockito.Mockito.when;
 @EnableConfigurationProperties({UserPath.class, BasePath.class})
 @TestPropertySource(properties = "routes.base-path=/api/v1")
 @TestPropertySource(properties = "routes.paths.users=/usuarios")
+@Import(SecurityTestConfig.class)
 @WebFluxTest
 class UserRouterRestTest {
 
