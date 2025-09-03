@@ -117,7 +117,7 @@ class UserRouterRestTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isCreated()
                 .expectBody(UserResponseDTO.class)
                 .value(saved -> Assertions.assertThat(saved.getEmail()).isEqualTo(response.getEmail()));
     }
