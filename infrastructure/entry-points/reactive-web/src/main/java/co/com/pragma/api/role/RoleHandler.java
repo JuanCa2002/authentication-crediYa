@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -83,7 +84,7 @@ public class RoleHandler {
                     )
             ),responses = {
             @ApiResponse(
-                    responseCode = "200",
+                    responseCode = "201",
                     description = "Role created",
                     content = @Content(
                             mediaType = "application/json",
@@ -112,7 +113,7 @@ public class RoleHandler {
                 .flatMap(roleUseCase::saveRole)
                 .doOnNext(role -> log.info("[RoleHandler] Role saved successfully: {}", role.getName()))
                 .map(mapper::toResponse)
-                .flatMap(savedRoleResponse -> ServerResponse.ok()
+                .flatMap(savedRoleResponse -> ServerResponse.status(HttpStatus.CREATED)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedRoleResponse))
                 .doOnError(e -> log.error("[RoleHandler] Error processing role creation request ", e));

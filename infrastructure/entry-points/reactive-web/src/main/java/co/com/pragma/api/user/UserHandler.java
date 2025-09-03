@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -94,7 +95,7 @@ public class UserHandler {
                     )
             ),responses = {
                 @ApiResponse(
-                        responseCode = "200",
+                        responseCode = "201",
                         description = "User created",
                         content = @Content(
                                 mediaType = "application/json",
@@ -123,7 +124,7 @@ public class UserHandler {
                 .flatMap(userUseCase::saveUser)
                 .doOnNext(user -> log.info("[UserHandler] User saved successfully: {}", user.getIdentificationNumber()))
                 .map(mapper::toResponse)
-                .flatMap(savedUserResponse -> ServerResponse.ok()
+                .flatMap(savedUserResponse -> ServerResponse.status(HttpStatus.CREATED)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedUserResponse))
                 .doOnError(e -> log.error("[UserHandler] Error processing user creation request ", e));
