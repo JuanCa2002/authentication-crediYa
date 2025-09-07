@@ -1,7 +1,14 @@
--------------------- TABLES-----------------------
+-------------------- TABLES -----------------------
+
+-- Table roles
+CREATE TABLE IF NOT EXISTS roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description VARCHAR(255) NOT NULL
+);
 
 -- Table users
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     user_name VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -23,17 +30,37 @@ CREATE TABLE users (
         ON UPDATE CASCADE
 );
 
--- Table roles
-CREATE TABLE roles (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL,
-    description VARCHAR(255) NOT NULL
-);
-
---------------------------INSERTIONS--------------
+-------------------------- INSERTIONS --------------
 
 -- Insertions table roles
 INSERT INTO roles (name, description)
 VALUES ('ADMINISTRADOR', 'Administrador general'),
        ('ASESOR', 'Asesor de la plataforma'),
-       ('CLIENTE', 'Cliente de la plataforma');
+       ('CLIENTE', 'Cliente de la plataforma')
+ON CONFLICT (name) DO NOTHING;  -- Avoid duplicates
+
+-- Insertions table users
+INSERT INTO users (
+    user_name,
+    password,
+    first_name,
+    second_name,
+    first_last_name,
+    second_last_name,
+    identification_number,
+    email,
+    base_salary,
+    role_id
+) VALUES (
+    'jcamilo',
+    '$2a$10$0sSJCE.LfrT3n2.KmDtyl.y8WOgn/78fP2G0N.5jlX7B3ywaUuyEW',
+    'Juan',
+    'Camilo',
+    'Torres',
+    'Beltrán',
+    '123',
+    'jua@email.com',
+    2500.00,
+    1
+)
+ON CONFLICT (identification_number) DO NOTHING; -- Avoid duplicates
