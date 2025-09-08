@@ -38,10 +38,10 @@ routes:
 
 adapters:
   r2dbc:
-    host: ${DB_HOST:db}
-    port: ${DB_PORT:5432}
-    database: ${DB_NAME:pragma_db}
-    schema: ${DB_SCHEMA:public}
-    username: ${DB_USER:pragma_user}
-    password: ${DB_PASSWORD:pragma_pass}
+    host: ${DB_HOST}
+    port: ${DB_PORT}
+    database: ${DB_NAME}
+    schema: ${DB_SCHEMA}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
 
