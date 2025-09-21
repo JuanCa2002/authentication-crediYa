@@ -41,7 +41,8 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/v3/api-docs/**",
                                 "/webjars/**",
-                                "/configuration/**").permitAll()
+                                "/configuration/**",
+                                "/actuator/health").permitAll()
                         .pathMatchers(HttpMethod.POST,"/api/v1/usuarios/**").hasAnyAuthority("ADMINISTRADOR", "ASESOR")
                         .pathMatchers(HttpMethod.GET,"/api/v1/usuarios/**").hasAnyAuthority("ADMINISTRADOR", "ASESOR", "CLIENTE")
                         .pathMatchers("/api/v1/roles/**").hasAnyAuthority("ADMINISTRADOR")

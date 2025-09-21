@@ -44,4 +44,9 @@ adapters:
     schema: ${DB_SCHEMA}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+    ssl: ${DB_SSL}
+
+aws:
+  region: ${AWS_REGION}
+  secretName: ${AWS_SECRET_NAME}
 
