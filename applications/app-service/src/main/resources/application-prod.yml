@@ -50,3 +50,6 @@ aws:
   region: ${AWS_REGION}
   secretName: ${AWS_SECRET_NAME}
 
+jwt:
+  secret: ${JWT_SECRET}
+
